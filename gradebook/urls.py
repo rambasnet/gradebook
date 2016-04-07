@@ -22,5 +22,5 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^grades/', include("grades.urls")),
+    url(r'', include("grades.urls")),
 ]

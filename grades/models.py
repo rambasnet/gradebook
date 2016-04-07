@@ -8,3 +8,5 @@ class Grade(models.Model):
     test2 = models.FloatField(default=0)
     test3 = models.FloatField(default=0)
 
+    def __str__(self):
+        return self.first_name + " " + self.last_name
