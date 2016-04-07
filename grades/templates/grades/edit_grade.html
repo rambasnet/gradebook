@@ -1,0 +1,58 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Grade Book</title></head>
+        <!--<link rel="stylesheet" href="/static/grades/css/style.css" /> -->
+        <link href="{% static 'grades/css/style.css' %}" rel="stylesheet" />
+    </head>
+    <body>
+        <header>
+            A Grade Book
+        </header>
+        <nav>
+            <ul>
+                <li><a href="/index/">Home</a></li>
+                <li><a href="/view_grades/">Viw All Grades</a></li>
+                <li><a href="/add_new/">Add New Grade</a></li>
+            </ul>
+        </nav>
+        <div id="main" style="height:300px;">
+            <h1>{{ heading }}</h1>
+            <p> {{ content }} </p>
+            {%  if errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li style="color:red;">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <form role="form" action="{% url 'save_grade' %}" method="post">
+                {% csrf_token %}
+                <label>First Name: *</label>
+                <input id="first_name" type="text" name="first_name" value="{{ student.first_name }}" ><br />
+                <label>Last Name: *</label>
+                <input id="last_name" type="text" name="last_name" value="{{ student.last_name }}" ><br />
+                <label>Grade 1: *</label>
+                <input id="grade1" type="text" name="grade1" value="{{ student.grade1 }}" required><br />
+                <label>Grade 2: *</label>
+                <input id="grade2" type="text" name="grade2" value="{{ student.grade2 }}" required><br />
+                <label>Grade 3: *</label>
+                <input id="grade3" type="text" name="grade3" value="{{ student.grade3 }}" required><br />
+                <div>
+                    <button type="submit">Save Changes</button>
+                </div>
+            </form>
+        </div>
+       	<footer>
+			<a href="/index/">Home</a> | <a href="/about/">About</a> | <a href="/contact/">Contact </a>|
+			<div id="copy">
+			&copy; 2016 Ram Basnet
+			</div>
+		</footer>
+    </body>
+    </html>
