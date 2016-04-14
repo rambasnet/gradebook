@@ -69,7 +69,7 @@ def save_grade(request):
         else:
             return render(request, 'grades/index.html', data)
     else:
-        # must be a get method so render the form so user can enter
+        # must be a get method so render the form for user to enter
         # data
         data = {
             'heading': 'Add New Student Grade',
