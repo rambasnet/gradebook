@@ -17,8 +17,8 @@
         <nav>
             <ul>
                 <li><a href="/index/">Home</a></li>
-                <li><a href="/view_grades/">Viw All Grades</a></li>
-                <li><a href="/add_new/">Add New Grade</a></li>
+                <li><a href="/grades/">Viw All Grades</a></li>
+                <li><a href="/grade/">Add New Grade</a></li>
             </ul>
         </nav>
         <div id="main" style="height:300px;">
@@ -31,18 +31,18 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-            <form role="form" action="{% url 'save_grade' %}" method="post">
+            <form role="form" action="{% url 'grade' student.id %}" method="post">
                 {% csrf_token %}
                 <label>First Name: *</label>
                 <input id="first_name" type="text" name="first_name" value="{{ student.first_name }}" ><br />
                 <label>Last Name: *</label>
                 <input id="last_name" type="text" name="last_name" value="{{ student.last_name }}" ><br />
                 <label>Grade 1: *</label>
-                <input id="grade1" type="text" name="grade1" value="{{ student.grade1 }}" required><br />
+                <input id="test1" type="text" name="test1" value="{{ student.test1 }}" required><br />
                 <label>Grade 2: *</label>
-                <input id="grade2" type="text" name="grade2" value="{{ student.grade2 }}" required><br />
+                <input id="test2" type="text" name="test2" value="{{ student.test2 }}" required><br />
                 <label>Grade 3: *</label>
-                <input id="grade3" type="text" name="grade3" value="{{ student.grade3 }}" required><br />
+                <input id="test3" type="text" name="test3" value="{{ student.test3 }}" required><br />
                 <div>
                     <button type="submit">Save Changes</button>
                 </div>

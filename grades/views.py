@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.core.urlresolvers import reverse
+from .models import Student
 
 # Create your views here.
 def index(request):
@@ -17,8 +19,8 @@ def index(request):
         <nav>
             <ul>
                 <li><a href="/index/">Home</a></li>
-                <li><a href="/view_grades/">Viw All Grades</a></li>
-                <li><a href="/add_new/">Add New Grade</a></li>
+                <li><a href="/grades/">Viw All Grades</a></li>
+                <li><a href="/addgrade/">Add New Grade</a></li>
             </ul>
         </nav>
         <div id="main" style="height:300px;">
@@ -43,7 +45,38 @@ def about(request):
             }
     return render(request, 'grades/index.html', data)
 
-def save_grade(request):
+def showGrades(request):
+    html = """
+        <table>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Test 1</th>
+                <th>Test 2</th>
+                <th>Test 3</th>
+                <th>Average </th>
+                <th colspan="2">Tools<th>
+            </tr>
+        """
+    for student in Student.objects.all():
+        student.findAverage()
+        student.save()
+        html += """<tr>
+                    <td>{0}</td>
+                    <td>{1}</td>
+                    <td>{2}</td>
+                    <td>{3}</td>
+                    <td>{4}</td>
+                    <td>{5:.2f}</td>
+                    <td><a href="{6}">Edit</a></td>
+                    </tr>
+                """.format(student.first_name, student.last_name, student.test1,
+                           student.test2, student.test3, student.avg, reverse('grade', args=(student.id,)))
+
+    html += "</table>"
+    return HttpResponse(html)
+
+def saveGrade(request, student_id=None):
     errors = []
     if request.method == 'POST':
         # handle data posted from the from
@@ -69,11 +102,22 @@ def save_grade(request):
         else:
             return render(request, 'grades/index.html', data)
     else:
-        # must be a get method so render the form for user to enter
-        # data
-        data = {
-            'heading': 'Add New Student Grade',
-            'content': 'Fill in the following information',
-            'errors': errors,
-        }
+        if not student_id:
+            # must be a get method to enter new grade info so render the form for user to enter
+            # data
+            data = {
+                'heading': 'Add New Student Grade',
+                'content': 'Fill in the following information',
+                'errors': errors,
+            }
+        else:
+            # edit existing student
+            student = Student.objects.get(pk=student_id)
+            data = {
+                'heading': 'Edit Student Grade',
+                'content': 'Update the following information',
+                'errors': errors,
+                'student':student,
+            }
+
         return render(request, 'grades/edit_grade.html', data)

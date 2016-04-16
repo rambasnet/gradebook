@@ -7,5 +7,6 @@ urlpatterns = [
     url(r'^index/$', views.index, name='index'),
     url(r'^home/$', views.index, name='home'),
     url(r'^about/$', views.about, name='about'),
-    url(r'^add_new/$', views.save_grade, name='save_grade'),
+    url(r'^grade/([0-9]*)', views.saveGrade, name='grade'),
+    url(r'^grades/$', views.showGrades, name='grades'),
 ]
