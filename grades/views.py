@@ -69,9 +69,12 @@ def showGrades(request):
                     <td>{4}</td>
                     <td>{5:.2f}</td>
                     <td><a href="{6}">Edit</a></td>
+                    <td><a href="{7}">Delete</a></td>
                     </tr>
                 """.format(student.first_name, student.last_name, student.test1,
-                           student.test2, student.test3, student.avg, reverse('grade', args=(student.id,)))
+                           student.test2, student.test3, student.avg,
+                           reverse('grade', args=(student.id,)),
+                           reverse('delete', args=(student.id,)))
 
     html += "</table>"
     return HttpResponse(html)
@@ -135,3 +138,9 @@ def saveGrade(request, student_id=None):
             }
 
         return render(request, 'grades/edit_grade.html', data)
+
+def deleteGrade(request, student_id):
+    student = Student.objects.get(pk=student_id)
+    student.delete()
+    return showGrades(request)
+
