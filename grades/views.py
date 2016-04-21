@@ -79,6 +79,14 @@ def showGrades(request):
     html += "</table>"
     return HttpResponse(html)
 
+def allGrades(request):
+    students = Student.objects.order_by("-avg")
+    data = ""
+    for student in students:
+        data += str(student.id) + "  " + student.first_name + "  " + str(student.avg) + "<br>"
+
+    return HttpResponse(data)
+
 def saveGrade(request, student_id=None):
     errors = []
     if request.method == 'POST':
