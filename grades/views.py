@@ -84,12 +84,12 @@ def saveGrade(request, student_id=None):
             errors.append('Enter first name.')
         if not request.POST.get('last_name'):
             errors.append('Enter last name.')
-        if not request.POST.get('grade1', ''):
-            errors.append('Enter Grade 1')
-        if not request.POST.get('grade2', ''):
-            errors.append('Enter Grade 2')
-        if not request.POST.get('grade3', ''):
-            errors.append('Enter Grade 3')
+        if not request.POST.get('test1', ''):
+            errors.append('Enter Test 1')
+        if not request.POST.get('test2', ''):
+            errors.append('Enter Test 2')
+        if not request.POST.get('test3', ''):
+            errors.append('Enter Test 3')
 
         data = {'heading': 'Thank You!',
                 'content': 'Your data has been saved!',
@@ -100,7 +100,21 @@ def saveGrade(request, student_id=None):
             data['content'] = 'Fill in the following information:'
             return render(request, 'grades/edit_grade.html', data)
         else:
-            return render(request, 'grades/index.html', data)
+            if student_id:
+                student = Student.objects.get(pk=student_id)
+            else:
+                student = Student()
+            student.first_name = request.POST.get('first_name')
+            student.last_name = request.POST.get('last_name')
+            student.test1 = float(request.POST.get('test1'))
+            student.test2 = float(request.POST.get('test2'))
+            student.test3 = float(request.POST.get('test3'))
+            student.findAverage()
+            student.save()
+            data['heading'] = 'Success'
+            data['content'] = 'Student Grade updated successfully!'
+            data['student'] = student
+            return render(request, 'grades/edit_grade.html', data)
     else:
         if not student_id:
             # must be a get method to enter new grade info so render the form for user to enter
