@@ -24,14 +24,14 @@
         <div id="main" style="height:300px;">
             <h1>{{ heading }}</h1>
             <p> {{ content }} </p>
-            {%  if errors %}
+            {% if errors %}
                 <ul>
                     {% for error in errors %}
                         <li style="color:red;">{{ error }}</li>
                     {% endfor %}
                 </ul>
             {% endif %}
-            <form role="form" action="{% url 'grade' student.id %}" method="post">
+            <form role="form" action="{% url 'grade' student.id %}" method="post" novalidate>
                 {% csrf_token %}
                 <label>First Name: *</label>
                 <input id="first_name" type="text" name="first_name" value="{{ student.first_name }}" ><br />

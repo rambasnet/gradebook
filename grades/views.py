@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
+
 from .models import Student
 
 # Create your views here.
@@ -19,13 +20,13 @@ def index(request):
         <nav>
             <ul>
                 <li><a href="/index/">Home</a></li>
-                <li><a href="/grades/">Viw All Grades</a></li>
+                <li><a href="/grades/">View All Grades</a></li>
                 <li><a href="/addgrade/">Add New Grade</a></li>
             </ul>
         </nav>
         <div id="main" style="height:300px;">
             <h1>Welcome to A Grade Book</h1>
-            <p> Some paragraph... </p>
+            <p> Some paragraphs... </p>
         </div>
        	<footer>
 			<a href="/index/">Home</a> | <a href="/about/">About</a> | <a href="/contact/">Contact </a>|
@@ -55,7 +56,7 @@ def showGrades(request):
                 <th>Test 2</th>
                 <th>Test 3</th>
                 <th>Average </th>
-                <th colspan="2">Tools<th>
+                <th colspan="2">Tools</th>
             </tr>
         """
     for student in Student.objects.all():
@@ -86,6 +87,17 @@ def allGrades(request):
         data += str(student.id) + "  " + student.first_name + "  " + str(student.avg) + "<br>"
 
     return HttpResponse(data)
+
+def showGradesUsingTemplate(request):
+    students = Student.objects.all()
+    for student in students:
+        student.findAverage()
+        student.save()
+
+    context = {'heading': "All Students' Grades",
+               'students_list': students,
+               }
+    return render(request, 'grades/grades.html', context)
 
 def saveGrade(request, student_id=None):
     errors = []
@@ -138,6 +150,7 @@ def saveGrade(request, student_id=None):
         else:
             # edit existing student
             student = Student.objects.get(pk=student_id)
+            #student = get_object_or_404(Student, pk=student_id)
             data = {
                 'heading': 'Edit Student Grade',
                 'content': 'Update the following information',
