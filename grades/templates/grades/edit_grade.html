@@ -34,9 +34,9 @@
             <form role="form" action="{% url 'grade' student.id %}" method="post" novalidate>
                 {% csrf_token %}
                 <label>First Name: *</label>
-                <input id="first_name" type="text" name="first_name" value="{{ student.first_name }}" ><br />
+                <input id="first_name" type="text" name="first_name" value="{{ student.first_name }}" required><br />
                 <label>Last Name: *</label>
-                <input id="last_name" type="text" name="last_name" value="{{ student.last_name }}" ><br />
+                <input id="last_name" type="text" name="last_name" value="{{ student.last_name }}" required><br />
                 <label>Test 1: *</label>
                 <input id="test1" type="text" name="test1" value="{{ student.test1 }}" required><br />
                 <label>Test 2: *</label>

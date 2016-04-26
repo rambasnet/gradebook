@@ -6,43 +6,19 @@ from .models import Student
 
 # Create your views here.
 def index(request):
-    html = """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Grade Book</title></head>
-        <link rel="stylesheet" href="/static/grades/css/style.css" />
-    </head>
-    <body>
-        <header>
-            A Grade Book
-        </header>
-        <nav>
-            <ul>
-                <li><a href="/index/">Home</a></li>
-                <li><a href="/grades/">View All Grades</a></li>
-                <li><a href="/addgrade/">Add New Grade</a></li>
-            </ul>
-        </nav>
-        <div id="main" style="height:300px;">
-            <h1>Welcome to A Grade Book</h1>
-            <p> Some paragraphs... </p>
-        </div>
-       	<footer>
-			<a href="/index/">Home</a> | <a href="/about/">About</a> | <a href="/contact/">Contact </a>|
-			<div id="copy">
-			&copy; 2016 Ram Basnet
-			</div>
-		</footer>
-    </body>
-    </html>
-    """
-    return HttpResponse(html)
+    context = {
+        'heading': 'Welcome to A Grade Book',
+        'content': 'Some paragraphs... ',
+        'title': 'A Grade Book'
+    }
+    #return HttpResponse(html)
+    return render(request, 'grades/index.html', context)
 
 def about(request):
     #print(request)
     data = {'heading': 'About',
-            'content': 'Demo program developed using django framework.'
+            'content': 'Demo program developed using django framework.',
+            'title': 'About A Grade Book App'
             }
     return render(request, 'grades/index.html', data)
 
@@ -94,7 +70,8 @@ def showGradesUsingTemplate(request):
         student.findAverage()
         student.save()
 
-    context = {'heading': "All Students' Grades",
+    context = {'title': 'All Students Grades',
+                'heading': "All Students' Grades",
                'students_list': students,
                }
     return render(request, 'grades/grades.html', context)
@@ -149,8 +126,8 @@ def saveGrade(request, student_id=None):
             }
         else:
             # edit existing student
-            student = Student.objects.get(pk=student_id)
-            #student = get_object_or_404(Student, pk=student_id)
+            #student = Student.objects.get(pk=student_id)
+            student = get_object_or_404(Student, pk=student_id)
             data = {
                 'heading': 'Edit Student Grade',
                 'content': 'Update the following information',
@@ -161,7 +138,8 @@ def saveGrade(request, student_id=None):
         return render(request, 'grades/edit_grade.html', data)
 
 def deleteGrade(request, student_id):
-    student = Student.objects.get(pk=student_id)
+    #student = Student.objects.get(pk=student_id)
+    student = get_object_or_404(Student, pk=student_id)
     student.delete()
     return showGrades(request)
 
