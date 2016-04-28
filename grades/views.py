@@ -172,7 +172,6 @@ def loginProcess(request):
                     login(request, user)
                     context = {
                         'heading': 'Welcome to A Grade Book.',
-                        'logedUser': user,
                         'title': 'A Grade Book',
                     }
                     return render(request, 'grades/index.html', context)

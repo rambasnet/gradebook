@@ -20,8 +20,8 @@
             A Grade Book
         </header>
         <div id="loginInfo">
-            {% if logedUser %}
-                Welcome, {{ logedUser.first_name }} {{ logedUser.last_name }} |
+            {% if user.is_authenticated %}
+                Welcome, {{ user.first_name }} {{ user.last_name }} |
                 <a href="{% url 'logout' %}">Logout</a>
             {% else %}
                 <a href="{% url 'login' %}">Login</a>
