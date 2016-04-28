@@ -115,6 +115,28 @@ div#copy
 	padding-right: 10px;
 }
 
+div#loginInfo
+{
+	text-align: right;
+	font-size: 0.7em;
+	/*line-height: 75px;*/
+	padding-right: 10px;
+	position: absolute;
+	top: 10px;
+	right: 100px;
+	color: white;
+}
+
+div#loginInfo a, div#loginInfo a:active, div#loginInfo a:visited
+{
+	color: white;
+}
+
+div#loginInfo a:hover
+{
+	color: red;
+}
+
 #yellowText
 {
 	color: yellow;
@@ -172,7 +194,6 @@ td.rightAlign
 h2
 {
 	margin-top: 0px;
-
 }
 
 #boxShadow

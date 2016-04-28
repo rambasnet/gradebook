@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 from .models import Student
 
@@ -8,7 +10,7 @@ from .models import Student
 def index(request):
     context = {
         'heading': 'Welcome to A Grade Book',
-        'content': 'Some paragraphs... ',
+        'content': 'Must <a href="/login/">login</a> to use the application.',
         'title': 'A Grade Book'
     }
     #return HttpResponse(html)
@@ -56,6 +58,7 @@ def showGrades(request):
     html += "</table>"
     return HttpResponse(html)
 
+@login_required(login_url='/login/')
 def allGrades(request):
     students = Student.objects.order_by("-avg")
     data = ""
@@ -65,6 +68,9 @@ def allGrades(request):
     return HttpResponse(data)
 
 def showGradesUsingTemplate(request):
+    if not request.user.is_authenticated():
+        return render(request, 'grades/login.html')
+
     students = Student.objects.all()
     for student in students:
         student.findAverage()
@@ -76,6 +82,7 @@ def showGradesUsingTemplate(request):
                }
     return render(request, 'grades/grades.html', context)
 
+@login_required()
 def saveGrade(request, student_id=None):
     errors = []
     if request.method == 'POST':
@@ -137,9 +144,53 @@ def saveGrade(request, student_id=None):
 
         return render(request, 'grades/edit_grade.html', data)
 
+@login_required()
 def deleteGrade(request, student_id):
     #student = Student.objects.get(pk=student_id)
     student = get_object_or_404(Student, pk=student_id)
     student.delete()
     return showGrades(request)
 
+def login_view(request):
+    return render(request, 'grades/login.html')
+
+def loginProcess(request):
+    errors = []
+    context = {}
+    if request.method == 'POST':
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
+        if not username:
+            errors.append('Username is required')
+        if not password:
+            errors.append('Password is required')
+
+        if not errors:
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    context = {
+                        'heading': 'Welcome to A Grade Book.',
+                        'logedUser': user,
+                        'title': 'A Grade Book',
+                    }
+                    return render(request, 'grades/index.html', context)
+                else:
+                    errors.append('This account has been disabled.')
+            else:
+                errors.append('Invalid username or password.')
+
+        context['errors'] = errors
+        return render(request, 'grades/login.html', context)
+    else:
+        login(request)
+
+def logout_view(request):
+    logout(request)
+    context = {
+        'heading': 'Successfully logged out.',
+        'content': '<a href="/login/">Log back in again.</a>',
+        'title': 'Logout Successful'
+    }
+    return render(request, 'grades/index.html', context)
