@@ -1,48 +1,15 @@
-{% load staticfiles %}
 {% load humanize %}
 
-<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>{{ title }}</title>
-        <!-- bootstrap
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
-              crossorigin="anonymous">
-        -->
-        <!--<link rel="stylesheet" href="/static/grades/css/style.css" /> -->
-        <link href="{% static 'grades/css/style.css' %}" rel="stylesheet" />
-    </head>
-    <body>
-        <header>
-            A Grade Book
-        </header>
-        <div id="loginInfo">
-            {% if logedUser %}
-                Welcome, {{ logedUser.first_name }} {{ logedUser.last_name }} |
-                <a href="{% url 'logout' %}">Logout</a>
-            {% else %}
-                <a href="{% url 'login' %}">Login</a>
-            {% endif %}
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/index/">Home</a></li>
-                <li><a href="/grades/">Viw All Grades</a></li>
-                <li><a href="/addgrade/">Add New Grade</a></li>
-            </ul>
-        </nav>
-        <div id="main" style="height:300px;">
-            <h1>{{ heading }}</h1>
-            {% if content %}
-                <p> {{ content }} </p>
-            {% endif %}
-            {% if students_list %}
-                <table style="width:95%">
-                <tr>
+{% include 'grades/header.html' %}
+
+<div id="main" style="height:300px;">
+    <h1>{{ heading }}</h1>
+    {% if content %}
+        <p> {{ content }} </p>
+    {% endif %}
+    {% if students_list %}
+        <table style="width:95%">
+            <tr>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Test 1</th>
@@ -50,9 +17,9 @@
                 <th>Test 3</th>
                 <th>Average </th>
                 <th colspan="2">Tools</th>
-                </tr>
-                {% for student in students_list %}
-                    <tr>
+            </tr>
+            {% for student in students_list %}
+                <tr>
                     <td>{{ student.first_name  }}</td>
                     <td>{{ student.last_name }}</td>
                     <td>{{ student.test1 }}</td>
@@ -61,30 +28,11 @@
                     <td>{{ student.avg|floatformat:2 }}</td>
                     <td><a href="{% url 'grade' student.id %}">Edit</a></td>
                     <td><a href="{% url 'delete' student.id %}">Delete</a></td>
-                    </tr>
-                {% endfor %}
-                </table>
-            {% else %}
-                <p><strong>No student grades are available.</strong></p>
-            {% endif %}
-        </div>
-       	<footer>
-			<a href="/index/">Home</a> | <a href="/about/">About</a> | <a href="/contact/">Contact </a>|
-			<div id="copy">
-			&copy; 2016 Ram Basnet
-			</div>
-		</footer>
-        {% block javascript %}
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
-                integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
-                crossorigin="anonymous"></script>
-        <script>
-        $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip();
-        });
-        </script>
-
-        {% endblock javascript %}
-    </body>
-    </html>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p><strong>No student grades are available.</strong></p>
+    {% endif %}
+</div>
+{% include 'grades/footer.html' %}

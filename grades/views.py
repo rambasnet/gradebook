@@ -152,7 +152,11 @@ def deleteGrade(request, student_id):
     return showGrades(request)
 
 def login_view(request):
-    return render(request, 'grades/login.html')
+    context = {
+        'title': 'Login',
+        'heading': 'Login',
+    }
+    return render(request, 'grades/login.html', context)
 
 def loginProcess(request):
     errors = []

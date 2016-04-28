@@ -1,26 +1,5 @@
-{% load staticfiles %}
+{% include 'grades/header.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Grade Book</title>
-    <!--<link rel="stylesheet" href="/static/grades/css/style.css" /> -->
-    <link href="{% static 'grades/css/style.css' %}" rel="stylesheet" />
-</head>
-<body>
-<header>
-    A Grade Book
-</header>
-<nav>
-    <ul>
-        <li><a href="/index/">Home</a></li>
-        <li><a href="/grades/">Viw All Grades</a></li>
-        <li><a href="/grade/">Add New Grade</a></li>
-    </ul>
-</nav>
 <div id="main" style="height:300px;">
     <h1>{{ heading }}</h1>
     <p> {{ content }} </p>
@@ -54,11 +33,4 @@
         </table>
     </form>
 </div>
-<footer>
-    <a href="/index/">Home</a> | <a href="/about/">About</a> | <a href="/contact/">Contact </a>|
-    <div id="copy">
-        &copy; 2016 Ram Basnet
-    </div>
-</footer>
-</body>
-</html>
+{% include 'grades/footer.html' %}
