@@ -6,15 +6,18 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Student
 
+
 # Create your views here.
 def index(request):
     context = {
         'heading': 'Welcome to A Grade Book',
-        'content': 'Must <a href="/login/">login</a> to use the application.',
         'title': 'A Grade Book'
     }
+    if not request.user.is_authenticated():
+        context['content'] = 'Must <a href="/login/">login</a> to use the application.',
     #return HttpResponse(html)
     return render(request, 'grades/index.html', context)
+
 
 def about(request):
     #print(request)
@@ -23,6 +26,7 @@ def about(request):
             'title': 'About A Grade Book App'
             }
     return render(request, 'grades/index.html', data)
+
 
 def showGrades(request):
     html = """
@@ -58,6 +62,7 @@ def showGrades(request):
     html += "</table>"
     return HttpResponse(html)
 
+
 @login_required(login_url='/login/')
 def allGrades(request):
     students = Student.objects.order_by("-avg")
@@ -67,20 +72,23 @@ def allGrades(request):
 
     return HttpResponse(data)
 
+
 def showGradesUsingTemplate(request):
     if not request.user.is_authenticated():
         return render(request, 'grades/login.html')
 
-    students = Student.objects.all()
+    students = Student.objects.order_by('-avg')
     for student in students:
         student.findAverage()
         student.save()
 
-    context = {'title': 'All Students Grades',
-                'heading': "All Students' Grades",
-               'students_list': students,
-               }
+    context = {
+            'title': 'All Students Grades',
+            'heading': "All Students' Grades",
+            'students_list': students,
+            }
     return render(request, 'grades/grades.html', context)
+
 
 @login_required()
 def saveGrade(request, student_id=None):
@@ -98,28 +106,31 @@ def saveGrade(request, student_id=None):
         if not request.POST.get('test3', ''):
             errors.append('Enter Test 3')
 
-        data = {'heading': 'Thank You!',
-                'content': 'Your data has been saved!',
-                'errors': errors,
+        if student_id:
+            student = Student.objects.get(pk=student_id)
+        else:
+            student = Student()
+        student.first_name = request.POST.get('first_name')
+        student.last_name = request.POST.get('last_name')
+        student.test1 = request.POST.get('test1')
+        student.test2 = request.POST.get('test2')
+        student.test3 = request.POST.get('test3')
+        data = {
+            'errors': errors,
+            'student': student,
             }
         if errors:
             data['heading'] = 'Add New Student Grade'
             data['content'] = 'Fill in the following information:'
             return render(request, 'grades/edit_grade.html', data)
         else:
-            if student_id:
-                student = Student.objects.get(pk=student_id)
-            else:
-                student = Student()
-            student.first_name = request.POST.get('first_name')
-            student.last_name = request.POST.get('last_name')
-            student.test1 = float(request.POST.get('test1'))
-            student.test2 = float(request.POST.get('test2'))
-            student.test3 = float(request.POST.get('test3'))
+            student.test1 = float(student.test1)
+            student.test2 = float(student.test2)
+            student.test3 = float(student.test3)
             student.findAverage()
             student.save()
             data['heading'] = 'Success'
-            data['content'] = 'Student Grade updated successfully!'
+            data['content'] = 'Student grade updated successfully!'
             data['student'] = student
             return render(request, 'grades/edit_grade.html', data)
     else:
@@ -139,10 +150,10 @@ def saveGrade(request, student_id=None):
                 'heading': 'Edit Student Grade',
                 'content': 'Update the following information',
                 'errors': errors,
-                'student':student,
+                'student': student,
             }
-
         return render(request, 'grades/edit_grade.html', data)
+
 
 @login_required()
 def deleteGrade(request, student_id):
@@ -151,12 +162,14 @@ def deleteGrade(request, student_id):
     student.delete()
     return showGrades(request)
 
+
 def login_view(request):
     context = {
         'title': 'Login',
         'heading': 'Login',
     }
     return render(request, 'grades/login.html', context)
+
 
 def loginProcess(request):
     errors = []
@@ -188,6 +201,7 @@ def loginProcess(request):
         return render(request, 'grades/login.html', context)
     else:
         login(request)
+
 
 def logout_view(request):
     logout(request)
