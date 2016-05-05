@@ -186,7 +186,7 @@ def loginProcess(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 if user.is_active:
-                    login(request, user)
+                    login(request, user) #adds session info for user
                     context = {
                         'heading': 'Welcome to A Grade Book.',
                         'title': 'A Grade Book',
@@ -200,7 +200,7 @@ def loginProcess(request):
         context['errors'] = errors
         return render(request, 'grades/login.html', context)
     else:
-        login(request)
+        login_view(request)
 
 
 def logout_view(request):
